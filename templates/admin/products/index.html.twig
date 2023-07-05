@@ -1,0 +1,71 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Liste des produits{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {% include "_partials/_adminnav.html.twig" %}
+            <main class="col-9 border border-light bg-white p-2">
+                <h1>Liste des produits</h1>
+                {% for produit in produits %}
+                    {% if produit.stock <= produit.stockMin %}
+<div class="alert alert-warning alert-dismissible fade show bg-black text-white" role="alert">
+    Attention, le stock du produit <span class="product-name">{{ produit.name }}</span> sera bientôt épuisé.
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+
+                    {% endif %}
+                {% endfor %}
+                {% if produits is not empty %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Photo</th>
+                                <th>Nom</th>
+                                <th>Stock</th>
+                                <th>Catégorie</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for produit in produits %}
+                                <tr>
+                                    <td>{{ produit.id }}</td>
+                                    {% if produit.images is defined and produit.images|length > 0 %}
+                                    <td><img src="{{ asset('assets/uploads/products/mini/300x300-' ~ produit.images[0].name ) }}" alt="{{ produit.name }}" class="img-thumbnail"></td>        {% endif %}
+                                    <td>{{ produit.name }}</td>
+                                    <td>{{ produit.stock }}</td>
+                                    <td>{{ produit.categories.name }}</td>
+                                    <td>
+                                        <a href="{{ path('admin_products_edit', {id: produit.id})}}" class="btn btn-success">
+                                            <i class="fas fa-edit"></i> 
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('admin_products_delete', {id: produit.id})}}" class="btn btn-danger" >
+                                            <i class="fas fa-trash-alt"></i> 
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucun produit trouvé.</p>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+    <style>
+    .product-name {
+    color: orange;
+}
+.btn-close-white {
+    color: white;
+}
+
+</style>
+{% endblock %}
